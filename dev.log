@@ -1,0 +1,35 @@
+nohup: no se tendrá en cuenta la entrada
+> Composer\Config::disableProcessTimeout
+> npx concurrently -c "#93c5fd,#c4b5fd,#fb7185,#fdba74" "php artisan serve --host=0.0.0.0 --port=8000" "php artisan queue:listen --tries=1" "php artisan pail --timeout=0" "npm run dev" --names=server,queue,logs,vite --kill-others
+[vite] 
+[vite] > dev
+[vite] > vite
+[vite] 
+[queue] 
+[queue]    INFO  Processing jobs from the [default] queue.  
+[queue] 
+[logs] 
+[logs]    INFO  Tailing application logs.                        Press Ctrl+C to exit  
+[logs]                                                Use -v|-vv to show more details  
+[server] 
+[server]    INFO  Server running on [http://0.0.0.0:8000].  
+[server] 
+[server]   Press Ctrl+C to stop the server
+[server] 
+[vite] 0:09:34 [vite] (client) info: Types generated for actions, routes, form variants
+[vite]   Plugin: @laravel/vite-plugin-wayfinder
+[vite] 
+[vite]   VITE v7.1.2  ready in 1121 ms
+[vite] 
+[vite]   ➜  Local:   http://localhost:5173/
+[vite]   ➜  Network: use --host to expose
+[vite] 
+[vite]   LARAVEL v12.28.0  plugin v2.0.0
+[vite] 
+[vite]   ➜  APP_URL: http://100.122.44.126:8000
+[server]   2025-09-04 00:09:39 /dashboard ................................... ~ 0.10ms
+[server]   2025-09-04 00:09:46 / .......................................... ~ 500.35ms
+[server]   2025-09-04 00:09:50 /dashboard ................................... ~ 0.10ms
+[server]   2025-09-04 00:09:54 /logout .................................... ~ 500.36ms
+[server]   2025-09-04 00:09:55 / ............................................ ~ 0.06ms
+[server]   2025-09-04 00:09:57 /login ..................................... ~ 500.34ms
