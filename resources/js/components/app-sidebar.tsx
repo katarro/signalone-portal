@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard, createVlan, createAp, createZona } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Network, Wifi, MapPin, Map, Shield } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Network, Wifi, MapPin, Map, Shield, HelpCircle } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -33,6 +33,11 @@ const mainNavItems: NavItem[] = [
         title: 'Portales Cautivos',
         href: '/captive-portals',
         icon: Shield,
+    },
+    {
+        title: 'Guía de Configuración',
+        href: '/setup-guide',
+        icon: HelpCircle,
     },
 
 ];

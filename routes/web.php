@@ -4,6 +4,7 @@ use App\Http\Controllers\VlanController;
 use App\Http\Controllers\ZonaController;
 use App\Http\Controllers\ApController;
 use App\Http\Controllers\CaptivePortalController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,9 +13,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // VLAN routes
     Route::resource('vlans', VlanController::class);
@@ -25,6 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('zonas', ZonaController::class);
     Route::get('create-zona', [ZonaController::class, 'create'])->name('create-zona');
     Route::post('create-zona', [ZonaController::class, 'store']);
+    Route::get('edit-zona', [ZonaController::class, 'edit'])->name('edit-zona');
 
     // AP routes
     Route::resource('aps', ApController::class);
@@ -37,6 +37,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('captive-portals', CaptivePortalController::class);
     Route::get('create-captive-portal', [CaptivePortalController::class, 'create'])->name('create-captive-portal');
     Route::post('create-captive-portal', [CaptivePortalController::class, 'store']);
+
+    // Setup Guide route
+    Route::get('setup-guide', function () {
+        return Inertia::render('setup-guide');
+    })->name('setup-guide');
 });
 
 require __DIR__.'/settings.php';

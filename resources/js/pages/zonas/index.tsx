@@ -5,6 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Edit, Trash2, Plus, Eye, Phone, Mail, User } from 'lucide-react';
+import { useState } from 'react';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface Zona {
     id: number;
@@ -39,9 +51,44 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function ZonasIndex({ zonas }: ZonasIndexProps) {
-    const handleDelete = (zona: Zona) => {
-        if (confirm(`¿Estás seguro de que quieres eliminar la zona "${zona.name}"?`)) {
-            router.delete(`/zonas/${zona.id}`);
+    const [deletingZona, setDeletingZona] = useState<Zona | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [actionInProgress, setActionInProgress] = useState<number | null>(null);
+
+    const handleView = (zona: Zona) => {
+        setActionInProgress(zona.id);
+        // Navegar a la página de edición que servirá como vista por ahora
+        router.get(`/edit-zona?id=${zona.id}`, {}, {
+            onFinish: () => setActionInProgress(null)
+        });
+    };
+
+    const handleEdit = (zona: Zona) => {
+        setActionInProgress(zona.id);
+        router.get(`/edit-zona?id=${zona.id}`, {}, {
+            onFinish: () => setActionInProgress(null)
+        });
+    };
+
+    const handleDelete = async (zona: Zona) => {
+        setIsDeleting(true);
+        try {
+            router.delete(`/zonas/${zona.id}`, {
+                onSuccess: () => {
+                    setDeletingZona(null);
+                    // Opcional: mostrar mensaje de éxito
+                },
+                onError: (errors) => {
+                    console.error('Error al eliminar zona:', errors);
+                    // Opcional: mostrar mensaje de error
+                },
+                onFinish: () => {
+                    setIsDeleting(false);
+                }
+            });
+        } catch (error) {
+            console.error('Error inesperado:', error);
+            setIsDeleting(false);
         }
     };
 
@@ -165,27 +212,57 @@ export default function ZonasIndex({ zonas }: ZonasIndexProps) {
 
                                 {/* Actions */}
                                 <div className="flex gap-2 pt-2">
-                                    <Link href={`/zonas/${zona.id}`}>
-                                        <Button variant="outline" size="sm">
-                                            <Eye className="h-3 w-3 mr-1" />
-                                            Ver
-                                        </Button>
-                                    </Link>
-                                    <Link href={`/zonas/${zona.id}/edit`}>
-                                        <Button variant="outline" size="sm">
-                                            <Edit className="h-3 w-3 mr-1" />
-                                            Editar
-                                        </Button>
-                                    </Link>
                                     <Button 
                                         variant="outline" 
-                                        size="sm" 
-                                        className="text-red-600 hover:text-red-700"
-                                        onClick={() => handleDelete(zona)}
+                                        size="sm"
+                                        onClick={() => handleView(zona)}
+                                        disabled={actionInProgress === zona.id}
                                     >
-                                        <Trash2 className="h-3 w-3 mr-1" />
-                                        Eliminar
+                                        <Eye className="h-3 w-3 mr-1" />
+                                        {actionInProgress === zona.id ? 'Cargando...' : 'Ver'}
                                     </Button>
+                                    <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        onClick={() => handleEdit(zona)}
+                                        disabled={actionInProgress === zona.id}
+                                    >
+                                        <Edit className="h-3 w-3 mr-1" />
+                                        {actionInProgress === zona.id ? 'Cargando...' : 'Editar'}
+                                    </Button>
+                                    
+                                    <AlertDialog open={deletingZona?.id === zona.id} onOpenChange={(open) => !open && setDeletingZona(null)}>
+                                        <AlertDialogTrigger>
+                                            <Button 
+                                                variant="outline" 
+                                                size="sm" 
+                                                className="text-red-600 hover:text-red-700"
+                                                onClick={() => setDeletingZona(zona)}
+                                                disabled={actionInProgress === zona.id}
+                                            >
+                                                <Trash2 className="h-3 w-3 mr-1" />
+                                                Eliminar
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>¿Eliminar zona?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    ¿Estás seguro de que quieres eliminar la zona <strong>"{zona.name}"</strong>? 
+                                                    Esta acción no se puede deshacer y se eliminarán todas las VLANs asociadas.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    onClick={() => handleDelete(zona)}
+                                                    className={`bg-red-600 hover:bg-red-700 ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                >
+                                                    {isDeleting ? 'Eliminando...' : 'Eliminar'}
+                                                </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 </div>
                             </CardContent>
                         </Card>

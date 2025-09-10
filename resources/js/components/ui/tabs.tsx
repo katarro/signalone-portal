@@ -27,8 +27,6 @@ interface TabsListProps {
 }
 
 const TabsList: React.FC<TabsListProps> = ({ className, children }) => {
-  const context = React.useContext(TabsContext);
-  
   return (
     <div
       className={cn(
@@ -36,11 +34,7 @@ const TabsList: React.FC<TabsListProps> = ({ className, children }) => {
         className
       )}
     >
-      {React.Children.map(children, child => 
-        React.isValidElement(child) 
-          ? React.cloneElement(child, { ...context } as any)
-          : child
-      )}
+      {children}
     </div>
   )
 }
@@ -51,18 +45,14 @@ interface TabsTriggerProps {
   children: React.ReactNode;
 }
 
-const TabsTrigger: React.FC<TabsTriggerProps & { 
-  value: string; 
-  onValueChange?: (value: string) => void; 
-}> = ({ 
+const TabsTrigger: React.FC<TabsTriggerProps> = ({ 
   value: triggerValue, 
   className, 
-  children, 
-  onValueChange
+  children
 }) => {
   const context = React.useContext(TabsContext);
   const currentValue = context?.value;
-  const handleChange = context?.onValueChange || onValueChange;
+  const handleChange = context?.onValueChange;
   
   return (
     <button
@@ -74,7 +64,10 @@ const TabsTrigger: React.FC<TabsTriggerProps & {
           : "",
         className
       )}
-      onClick={() => handleChange?.(triggerValue)}
+      onClick={() => {
+        console.log('TabsTrigger clicked with value:', triggerValue);
+        handleChange?.(triggerValue);
+      }}
     >
       {children}
     </button>

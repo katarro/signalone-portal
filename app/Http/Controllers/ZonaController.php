@@ -76,10 +76,20 @@ class ZonaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Zona $zona)
+    public function edit(Request $request, Zona $zona = null)
     {
-        return Inertia::render('zonas/edit', [
-            'zona' => $zona
+        // Si se llama desde la ruta edit-zona con query parameter
+        if ($request->has('id') && !$zona) {
+            $zona = Zona::findOrFail($request->get('id'));
+        }
+        
+        // Si se llama desde resource route
+        if (!$zona) {
+            abort(404);
+        }
+
+        return Inertia::render('edit-zona', [
+            'zona' => $zona->loadCount('vlans')
         ]);
     }
 
@@ -96,6 +106,7 @@ class ZonaController extends Controller
             'contact_phone' => 'nullable|string|max:20',
             'contact_email' => 'nullable|email|max:255',
             'notes' => 'nullable|string|max:1000',
+            'is_active' => 'boolean',
         ], [
             'name.required' => 'El nombre de la zona es obligatorio.',
             'name.unique' => 'Ya existe una zona con este nombre.',
