@@ -24,4 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withSchedule(function ($schedule) {
+        // Ejecutar ping de Access Points cada minuto
+        $schedule->job(\App\Jobs\PingAccessPointsJob::class)->everyMinute();
+    })
+    ->create();

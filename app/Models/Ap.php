@@ -29,6 +29,9 @@ class Ap extends Model
         'ping_response_time',
         'is_active',
         'performance_metrics',
+        'packet_loss',
+        'packets_received',
+        'status_text',
     ];
 
     protected $casts = [
@@ -38,6 +41,8 @@ class Ap extends Model
         'ping_response_time' => 'integer',
         'max_clients' => 'integer',
         'current_clients' => 'integer',
+        'packet_loss' => 'integer',
+        'packets_received' => 'integer',
     ];
 
     /**

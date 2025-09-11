@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Link, useForm } from "@inertiajs/react";
+import { Link, useForm, router } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 import { 
   Wifi, 
   MapPin, 
@@ -17,7 +18,8 @@ import {
   Trash2,
   Power,
   PowerOff,
-  Edit
+  Edit,
+  RefreshCw
 } from "lucide-react";
 
 interface Ap {
@@ -33,6 +35,8 @@ interface Ap {
   status: 'online' | 'offline' | 'error' | 'maintenance';
   last_ping?: string;
   ping_response_time?: number;
+  packet_loss?: number;
+  packets_received?: number;
   is_active: boolean;
   status_color: string;
   status_text: string;
@@ -58,6 +62,25 @@ interface ApIndexProps {
 
 export default function ApIndex({ aps }: ApIndexProps) {
   const { post, delete: destroy } = useForm();
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [lastRefresh, setLastRefresh] = useState(new Date());
+
+  // Auto-refresh cada 30 segundos para ver actualizaciones del ping automático
+  useEffect(() => {
+    if (!autoRefresh) return;
+
+    const interval = setInterval(() => {
+      router.reload({ only: ['aps'] });
+      setLastRefresh(new Date());
+    }, 30000); // 30 segundos
+
+    return () => clearInterval(interval);
+  }, [autoRefresh]);
+
+  const handleRefresh = () => {
+    router.reload({ only: ['aps'] });
+    setLastRefresh(new Date());
+  };
 
   const handlePing = (apId: number) => {
     post(`/aps/${apId}/ping`);
@@ -113,15 +136,38 @@ export default function ApIndex({ aps }: ApIndexProps) {
             <div>
               <h2 className="text-2xl font-bold tracking-tight">Access Points</h2>
               <p className="text-muted-foreground">
-                Gestiona los puntos de acceso de tu red inalámbrica
+                Gestiona los puntos de acceso de tu red inalámbrica. 
+                <span className="text-xs ml-2">
+                  Ping automático cada 60s | Último refresh: {lastRefresh.toLocaleTimeString()}
+                </span>
               </p>
             </div>
-            <Link href="/create-ap">
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Nuevo AP
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRefresh}
+                className="flex items-center gap-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Actualizar
               </Button>
-            </Link>
+              <Button
+                variant={autoRefresh ? "default" : "outline"}
+                size="sm"
+                onClick={() => setAutoRefresh(!autoRefresh)}
+                className="flex items-center gap-2"
+              >
+                <Activity className="h-4 w-4" />
+                {autoRefresh ? "Auto-refresh ON" : "Auto-refresh OFF"}
+              </Button>
+              <Link href="/create-ap">
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Nuevo AP
+                </Button>
+              </Link>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -186,6 +232,27 @@ export default function ApIndex({ aps }: ApIndexProps) {
                         <Timer className="h-4 w-4 text-gray-500" />
                         <span className="text-muted-foreground">Ping:</span>
                         <span>{ap.ping_response_time}ms</span>
+                        {ap.packets_received !== undefined && (
+                          <span className="text-xs text-muted-foreground">
+                            ({ap.packets_received}/3 paquetes)
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {ap.packet_loss !== undefined && ap.packet_loss > 0 && (
+                      <div className="flex items-center gap-2 text-sm">
+                        <Activity className="h-4 w-4 text-red-500" />
+                        <span className="text-muted-foreground">Pérdida:</span>
+                        <span className="text-red-600">{ap.packet_loss}%</span>
+                      </div>
+                    )}
+                    {ap.last_ping && (
+                      <div className="flex items-center gap-2 text-sm">
+                        <Timer className="h-4 w-4 text-gray-500" />
+                        <span className="text-muted-foreground">Último ping:</span>
+                        <span className="text-xs">
+                          {new Date(ap.last_ping).toLocaleString()}
+                        </span>
                       </div>
                     )}
                   </div>
