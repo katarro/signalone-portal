@@ -3,7 +3,8 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Wifi, WifiOff, Activity, RotateCcw } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSync } from '@/contexts/SyncContext';
 
 interface ConnectivityOverviewProps {
     stats: {
@@ -18,6 +19,13 @@ interface ConnectivityOverviewProps {
 
 export function ConnectivityOverview({ stats, onRefresh }: ConnectivityOverviewProps) {
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+    const { isDashboardPageActive } = useSync();
+
+    // Actualizar timestamp cuando cambien las stats
+    useEffect(() => {
+        setLastUpdate(new Date());
+    }, [stats]);
 
     const handleRefresh = async () => {
         if (isRefreshing || !onRefresh) return;
@@ -52,7 +60,12 @@ export function ConnectivityOverview({ stats, onRefresh }: ConnectivityOverviewP
                 <div className="flex items-center justify-between">
                     <div>
                         <CardTitle className="text-lg">Estado de Conectividad</CardTitle>
-                        <CardDescription>Monitoreo en tiempo real de Access Points</CardDescription>
+                        <CardDescription>
+                            Monitoreo en tiempo real de Access Points
+                            <span className="block text-xs text-muted-foreground mt-1">
+                                Última actualización: {lastUpdate.toLocaleTimeString()}
+                            </span>
+                        </CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
                         <Badge className={statusBadge.color}>

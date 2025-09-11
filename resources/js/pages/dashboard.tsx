@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
+import { useSync } from '@/contexts/SyncContext';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { ConnectivityOverview } from '@/components/dashboard/connectivity-overview';
 import { ZonaStats } from '@/components/dashboard/zona-stats';
@@ -109,14 +110,32 @@ export default function Dashboard({
     network_performance
 }: DashboardProps) {
     const [connectivityData, setConnectivityData] = useState(connectivity);
+    const [statsData, setStatsData] = useState(stats);
+    const [problematicApsData, setProblematicApsData] = useState(problematic_aps);
+    const { setIsDashboardPageActive, triggerDashboardSync } = useSync();
     
+    // Marcar que el dashboard está activo cuando se monta el componente
+    useEffect(() => {
+        setIsDashboardPageActive(true);
+        return () => setIsDashboardPageActive(false);
+    }, [setIsDashboardPageActive]);
+
     const handleConnectivityRefresh = () => {
         router.get(dashboard(), {}, {
-            only: ['connectivity'],
+            only: ['connectivity', 'stats', 'problematic_aps'],
             preserveState: true,
             preserveScroll: true,
             onSuccess: (page) => {
-                setConnectivityData(page.props.connectivity as any);
+                const pageProps = page.props as any;
+                if (pageProps.connectivity) {
+                    setConnectivityData(pageProps.connectivity);
+                }
+                if (pageProps.stats) {
+                    setStatsData(pageProps.stats);
+                }
+                if (pageProps.problematic_aps) {
+                    setProblematicApsData(pageProps.problematic_aps);
+                }
             }
         });
     };
@@ -130,29 +149,29 @@ export default function Dashboard({
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <StatCard
                         title="Access Points"
-                        value={stats.total_aps}
-                        description={`${stats.active_aps} activos`}
+                        value={statsData.total_aps}
+                        description={`${statsData.active_aps} activos`}
                         icon={Wifi}
                         iconColor="text-blue-600"
                     />
                     <StatCard
                         title="VLANs"
-                        value={stats.total_vlans}
-                        description={`${stats.active_vlans} activas`}
+                        value={statsData.total_vlans}
+                        description={`${statsData.active_vlans} activas`}
                         icon={Network}
                         iconColor="text-green-600"
                     />
                     <StatCard
                         title="Zonas"
-                        value={stats.total_zonas}
-                        description={`${stats.active_zonas} activas`}
+                        value={statsData.total_zonas}
+                        description={`${statsData.active_zonas} activas`}
                         icon={MapPin}
                         iconColor="text-purple-600"
                     />
                     <StatCard
                         title="Portales Cautivos"
-                        value={stats.total_portals}
-                        description={`${stats.active_portals} activos`}
+                        value={statsData.total_portals}
+                        description={`${statsData.active_portals} activos`}
                         icon={Shield}
                         iconColor="text-orange-600"
                     />
@@ -175,7 +194,7 @@ export default function Dashboard({
 
                 {/* Tercera fila con problemas y actividad */}
                 <div className="grid gap-6 md:grid-cols-2">
-                    <ProblematicAps aps={problematic_aps} />
+                    <ProblematicAps aps={problematicApsData} />
                     <RecentActivity activities={recent_activity} />
                 </div>
 

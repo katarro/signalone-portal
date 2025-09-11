@@ -12,6 +12,7 @@ import { useForm, router } from "@inertiajs/react";
 import { FormEventHandler } from "react";
 import { Wifi, Settings, MapPin } from "lucide-react";
 import { toast } from "sonner";
+import { useSync } from "@/contexts/SyncContext";
 
 interface CreateApProps {
   vlans: Array<{
@@ -53,6 +54,8 @@ export default function CreateAp({ vlans, zonas }: CreateApProps) {
     is_active: true,
   });
 
+  const { triggerApSync } = useSync();
+
   const submit: FormEventHandler = (e) => {
     e.preventDefault();
     post('/create-ap', {
@@ -60,6 +63,8 @@ export default function CreateAp({ vlans, zonas }: CreateApProps) {
         toast.success("Access Point creado", {
           description: `El AP "${data.name}" ha sido creado exitosamente.`,
         });
+        // Disparar sincronización con el dashboard
+        triggerApSync();
       },
       onError: (errors) => {
         console.error('Error creating AP:', errors);

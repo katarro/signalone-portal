@@ -13,6 +13,7 @@ import { FormEventHandler } from "react";
 import { Wifi, Settings, MapPin, ArrowLeft } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import { toast } from "sonner";
+import { useSync } from "@/contexts/SyncContext";
 
 interface Ap {
   id: number;
@@ -68,6 +69,8 @@ export default function EditAp({ ap, vlans, zonas }: EditApProps) {
     is_active: ap.is_active,
   });
 
+  const { triggerApSync } = useSync();
+
   const submit: FormEventHandler = (e) => {
     e.preventDefault();
     
@@ -88,6 +91,8 @@ export default function EditAp({ ap, vlans, zonas }: EditApProps) {
         toast.success("Access Point actualizado", {
           description: `El AP "${data.name}" ha sido actualizado exitosamente.`,
         });
+        // Disparar sincronización con el dashboard
+        triggerApSync();
       },
       onError: (errors) => {
         console.error('Error updating AP:', errors);

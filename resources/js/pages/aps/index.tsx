@@ -18,6 +18,7 @@ import {
 import { Link, useForm, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useSync } from "@/contexts/SyncContext";
 import { 
   Wifi, 
   MapPin, 
@@ -81,6 +82,13 @@ export default function ApsIndex({ aps: initialAps }: ApIndexProps) {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const { post } = useForm();
+  const { setIsApPageActive, triggerApSync } = useSync();
+
+  // Marcar que la página de APs está activa cuando se monta el componente
+  useEffect(() => {
+    setIsApPageActive(true);
+    return () => setIsApPageActive(false);
+  }, [setIsApPageActive]);
 
   // Auto-refresh cada 30 segundos para ver actualizaciones del ping automático
   useEffect(() => {
@@ -97,6 +105,8 @@ export default function ApsIndex({ aps: initialAps }: ApIndexProps) {
   const handleRefresh = () => {
     router.reload({ only: ['aps'] });
     setLastRefresh(new Date());
+    // Disparar sincronización con el dashboard
+    triggerApSync();
   };
 
   const handlePing = (apId: number) => {
@@ -105,6 +115,8 @@ export default function ApsIndex({ aps: initialAps }: ApIndexProps) {
         toast.success("Ping enviado", {
           description: "Se ha enviado un ping al Access Point exitosamente.",
         });
+        // Disparar sincronización con el dashboard
+        triggerApSync();
       },
       onError: (errors) => {
         console.error('Error sending ping:', errors);
@@ -122,6 +134,8 @@ export default function ApsIndex({ aps: initialAps }: ApIndexProps) {
         toast.success("Estado cambiado", {
           description: "El estado del Access Point ha sido cambiado exitosamente.",
         });
+        // Disparar sincronización con el dashboard
+        triggerApSync();
       },
       onError: (errors) => {
         console.error('Error toggling status:', errors);
@@ -144,6 +158,8 @@ export default function ApsIndex({ aps: initialAps }: ApIndexProps) {
           toast.success("Access Point eliminado", {
             description: `El AP "${apToDelete.name}" ha sido eliminado exitosamente.`,
           });
+          // Disparar sincronización con el dashboard
+          triggerApSync();
         },
         onError: (errors) => {
           console.error('Error deleting AP:', errors);
