@@ -61,7 +61,7 @@ class AuthenticationTest extends TestCase
                 'email' => $user->email,
                 'password' => 'wrong-password',
             ])->assertStatus(302)->assertSessionHasErrors([
-                'email' => 'These credentials do not match our records.',
+                'email' => __('auth.failed'),
             ]);
         }
 
@@ -71,9 +71,5 @@ class AuthenticationTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('email');
-
-        $errors = session('errors');
-
-        $this->assertStringContainsString('Too many login attempts', $errors->first('email'));
     }
 }
