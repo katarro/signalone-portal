@@ -4,6 +4,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Wifi, Settings, Palette, Shield, Clock } from 'lucide-react';
+import { toast } from 'sonner';
 import GeneralTab from './tabs/GeneralTab';
 import AuthenticationTab from './tabs/AuthenticationTab';
 import SessionTab from './tabs/SessionTab';
@@ -67,7 +68,19 @@ export default function Create() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/captive-portals');
+        post('/captive-portals', {
+            onSuccess: () => {
+                toast.success("Portal Cautivo creado", {
+                    description: `El portal cautivo "${data.name}" ha sido creado exitosamente.`,
+                });
+            },
+            onError: (errors) => {
+                console.error('Error creating captive portal:', errors);
+                toast.error("Error al crear portal", {
+                    description: "No se pudo crear el portal cautivo. Por favor, verifica los datos e intenta nuevamente.",
+                });
+            }
+        });
     };
 
 

@@ -12,6 +12,7 @@ import { useForm } from "@inertiajs/react";
 import { FormEventHandler } from "react";
 import { Wifi, Settings, MapPin, ArrowLeft } from "lucide-react";
 import { Link } from "@inertiajs/react";
+import { toast } from "sonner";
 
 interface Ap {
   id: number;
@@ -84,10 +85,15 @@ export default function EditAp({ ap, vlans, zonas }: EditApProps) {
     
     put(`/aps/${ap.id}`, {
       onSuccess: () => {
-        // Opcional: redirigir o mostrar mensaje
+        toast.success("Access Point actualizado", {
+          description: `El AP "${data.name}" ha sido actualizado exitosamente.`,
+        });
       },
       onError: (errors) => {
         console.error('Error updating AP:', errors);
+        toast.error("Error al actualizar", {
+          description: "No se pudo actualizar el Access Point. Por favor, verifica los datos e intenta nuevamente.",
+        });
       }
     });
   };

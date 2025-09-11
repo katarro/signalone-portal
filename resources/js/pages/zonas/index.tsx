@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Edit, Trash2, Plus, Eye, Phone, Mail, User } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -76,11 +77,15 @@ export default function ZonasIndex({ zonas }: ZonasIndexProps) {
             router.delete(`/zonas/${zona.id}`, {
                 onSuccess: () => {
                     setDeletingZona(null);
-                    // Opcional: mostrar mensaje de éxito
+                    toast.success("Zona eliminada", {
+                        description: `La zona "${zona.name}" ha sido eliminada exitosamente.`,
+                    });
                 },
                 onError: (errors) => {
                     console.error('Error al eliminar zona:', errors);
-                    // Opcional: mostrar mensaje de error
+                    toast.error("Error al eliminar zona", {
+                        description: "No se pudo eliminar la zona. Por favor, intenta nuevamente.",
+                    });
                 },
                 onFinish: () => {
                     setIsDeleting(false);

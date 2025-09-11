@@ -4,6 +4,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Wifi, Settings, Palette, Shield, Clock, ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
 import GeneralTab from './tabs/GeneralTab';
 import AuthenticationTab from './tabs/AuthenticationTab';
 import SessionTab from './tabs/SessionTab';
@@ -159,11 +160,16 @@ export default function Edit({ captivePortal }: Props) {
             onSuccess: (page) => {
                 console.log('Update successful!');
                 console.log('Response page:', page);
+                toast.success("Portal Cautivo actualizado", {
+                    description: `El portal cautivo "${data.name}" ha sido actualizado exitosamente.`,
+                });
                 router.visit('/captive-portals');
             },
             onError: (errors) => {
                 console.error('Update failed with validation errors:', errors);
-                alert('Error de validación. Revisa la consola para más detalles.');
+                toast.error("Error al actualizar portal", {
+                    description: "No se pudo actualizar el portal cautivo. Por favor, verifica los datos e intenta nuevamente.",
+                });
             },
             onFinish: () => {
                 console.log('Request finished');

@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { useForm, router } from "@inertiajs/react";
 import { FormEventHandler } from "react";
 import { Wifi, Settings, MapPin } from "lucide-react";
+import { toast } from "sonner";
 
 interface CreateApProps {
   vlans: Array<{
@@ -54,7 +55,19 @@ export default function CreateAp({ vlans, zonas }: CreateApProps) {
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault();
-    post('/create-ap');
+    post('/create-ap', {
+      onSuccess: () => {
+        toast.success("Access Point creado", {
+          description: `El AP "${data.name}" ha sido creado exitosamente.`,
+        });
+      },
+      onError: (errors) => {
+        console.error('Error creating AP:', errors);
+        toast.error("Error al crear AP", {
+          description: "No se pudo crear el Access Point. Por favor, verifica los datos e intenta nuevamente.",
+        });
+      }
+    });
   };
 
   return (

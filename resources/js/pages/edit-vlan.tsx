@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { AlertCircle, ArrowLeft, Network } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Zona {
     id: number;
@@ -110,8 +111,17 @@ export default function EditVlan({ vlan, zonas, captivePortals }: EditVlanProps)
         // Use router.put to send the converted data
         router.put(`/vlans/${vlan.id}`, submitData, {
             onSuccess: () => {
+                toast.success("VLAN actualizada", {
+                    description: `La VLAN "${data.name}" ha sido actualizada exitosamente.`,
+                });
                 router.get('/vlans');
             },
+            onError: (errors) => {
+                console.error('Error updating VLAN:', errors);
+                toast.error("Error al actualizar VLAN", {
+                    description: "No se pudo actualizar la VLAN. Por favor, verifica los datos e intenta nuevamente.",
+                });
+            }
         });
     };
 

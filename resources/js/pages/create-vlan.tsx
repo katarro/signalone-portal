@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -61,7 +62,19 @@ export default function CreateVlan({ zonas, captivePortals }: CreateVlanProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/create-vlan');
+        post('/create-vlan', {
+            onSuccess: () => {
+                toast.success("VLAN creada", {
+                    description: `La VLAN "${data.name}" ha sido creada exitosamente.`,
+                });
+            },
+            onError: (errors) => {
+                console.error('Error creating VLAN:', errors);
+                toast.error("Error al crear VLAN", {
+                    description: "No se pudo crear la VLAN. Por favor, verifica los datos e intenta nuevamente.",
+                });
+            }
+        });
     };
 
     return (

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Network, Plus, Edit, Trash2, Eye } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -82,9 +83,15 @@ export default function VlansIndex({ vlans }: VlansIndexProps) {
             router.delete(`/vlans/${vlan.id}`, {
                 onSuccess: () => {
                     setDeletingVlan(null);
+                    toast.success("VLAN eliminada", {
+                        description: `La VLAN "${vlan.name}" ha sido eliminada exitosamente.`,
+                    });
                 },
                 onError: (errors) => {
                     console.error('Error al eliminar VLAN:', errors);
+                    toast.error("Error al eliminar VLAN", {
+                        description: "No se pudo eliminar la VLAN. Por favor, intenta nuevamente.",
+                    });
                 },
                 onFinish: () => {
                     setIsDeleting(false);

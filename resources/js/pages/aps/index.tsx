@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Link, useForm, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { 
   Wifi, 
   MapPin, 
@@ -99,12 +100,35 @@ export default function ApsIndex({ aps: initialAps }: ApIndexProps) {
   };
 
   const handlePing = (apId: number) => {
-    post(`/aps/${apId}/ping`);
+    post(`/aps/${apId}/ping`, {
+      onSuccess: () => {
+        toast.success("Ping enviado", {
+          description: "Se ha enviado un ping al Access Point exitosamente.",
+        });
+      },
+      onError: (errors) => {
+        console.error('Error sending ping:', errors);
+        toast.error("Error al enviar ping", {
+          description: "No se pudo enviar el ping al Access Point.",
+        });
+      }
+    });
   };
 
   const handleToggleStatus = (apId: number) => {
     post(`/aps/${apId}/toggle`, {
-      method: 'patch'
+      method: 'patch',
+      onSuccess: () => {
+        toast.success("Estado cambiado", {
+          description: "El estado del Access Point ha sido cambiado exitosamente.",
+        });
+      },
+      onError: (errors) => {
+        console.error('Error toggling status:', errors);
+        toast.error("Error al cambiar estado", {
+          description: "No se pudo cambiar el estado del Access Point.",
+        });
+      }
     });
   };
 
@@ -115,7 +139,19 @@ export default function ApsIndex({ aps: initialAps }: ApIndexProps) {
 
   const confirmDelete = () => {
     if (apToDelete) {
-      router.delete(`/aps/${apToDelete.id}`);
+      router.delete(`/aps/${apToDelete.id}`, {
+        onSuccess: () => {
+          toast.success("Access Point eliminado", {
+            description: `El AP "${apToDelete.name}" ha sido eliminado exitosamente.`,
+          });
+        },
+        onError: (errors) => {
+          console.error('Error deleting AP:', errors);
+          toast.error("Error al eliminar", {
+            description: "No se pudo eliminar el Access Point. Por favor, intenta nuevamente.",
+          });
+        }
+      });
       setDeleteDialogOpen(false);
       setApToDelete(null);
     }

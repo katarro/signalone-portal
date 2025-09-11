@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { AlertCircle, MapPin, ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Zona {
     id: number;
@@ -67,9 +68,18 @@ export default function EditZona({ zona }: EditZonaProps) {
         
         put(`/zonas/${zona.id}`, {
             onSuccess: () => {
+                toast.success("Zona actualizada", {
+                    description: `La zona "${data.name}" ha sido actualizada exitosamente.`,
+                });
                 // Redirigir a la lista de zonas después de la actualización exitosa
                 router.get('/zonas');
             },
+            onError: (errors) => {
+                console.error('Error updating zona:', errors);
+                toast.error("Error al actualizar zona", {
+                    description: "No se pudo actualizar la zona. Por favor, verifica los datos e intenta nuevamente.",
+                });
+            }
         });
     };
 

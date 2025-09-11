@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, MapPin } from 'lucide-react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -43,7 +44,16 @@ export default function CreateZona() {
         post('/create-zona', {
             onSuccess: () => {
                 reset();
+                toast.success("Zona creada", {
+                    description: `La zona "${data.name}" ha sido creada exitosamente.`,
+                });
             },
+            onError: (errors) => {
+                console.error('Error creating zona:', errors);
+                toast.error("Error al crear zona", {
+                    description: "No se pudo crear la zona. Por favor, verifica los datos e intenta nuevamente.",
+                });
+            }
         });
     };
 
