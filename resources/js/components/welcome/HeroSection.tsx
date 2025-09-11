@@ -52,18 +52,13 @@ export default function HeroSection({ stats }: HeroProps) {
                                     Contratar Portal Cautivo
                                     <ChevronRight className="w-5 h-5 ml-2" />
                                 </Link>
-                                <Link
-                                    href={login()}
-                                    className="inline-flex items-center px-8 py-3 border-2 border-white text-white rounded-lg hover:bg-white hover:text-gray-900 hover:scale-105 transition-all duration-200 text-lg font-medium backdrop-blur-sm"
-                                >
-                                    Ver Demo
-                                </Link>
+                             
                             </>
                         )}
                     </div>
 
                     {/* Stats */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
                         {stats.map((stat, index) => (
                             <div key={index} className="text-center group">
                                 <div className="text-3xl font-bold text-[#0090F9] mb-2 group-hover:scale-110 transition-transform duration-200">{stat.number}</div>

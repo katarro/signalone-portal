@@ -7,7 +7,7 @@ export default function CTASection() {
     const { auth } = usePage<SharedData>().props;
 
     return (
-        <section className="py-20 bg-[#0090F9]">
+        <section className="py-20 bg-gradient-to-b from-[#101828] to-indigo-600">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h2 className="text-3xl font-bold text-white mb-4">
                     ¿Listo para optimizar tu red WiFi?

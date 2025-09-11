@@ -16,7 +16,7 @@ export default function FAQSection() {
         },
         {
             question: "¿Cómo crear un portal cautivo para mi negocio?",
-            answer: "Con SignalOne puedes crear un portal cautivo personalizado en minutos. Ofrecemos configuración para MikroTik, autenticación SMS, integración con redes sociales y soporte técnico especializado en Chile."
+            answer: "Con SignalOne puedes crear un portal cautivo personalizado en minutos. Ofrecemos configuración para Acess Points, autenticación SMS, integración con redes sociales y soporte técnico especializado en Chile."
         },
         {
             question: "¿Qué hardware necesito para implementar un portal cautivo?",
@@ -26,10 +26,10 @@ export default function FAQSection() {
             question: "¿Cuánto cuesta implementar un portal cautivo WiFi?",
             answer: "Ofrecemos precios competitivos desde planes básicos para pequeños negocios hasta soluciones empresariales. Contacta con nuestros proveedores de portal cautivo en Santiago para una cotización personalizada."
         },
-        {
-            question: "¿Cómo monetizar un portal cautivo con publicidad?",
-            answer: "Nuestro portal cautivo incluye opciones de monetización con espacios publicitarios personalizables, pago en línea y integración con sistemas de marketing para maximizar tus ingresos."
-        }
+        // {
+        //     question: "¿Cómo monetizar un portal cautivo con publicidad?",
+        //     answer: "Nuestro portal cautivo incluye opciones de monetización con espacios publicitarios personalizables, pago en línea y integración con sistemas de marketing para maximizar tus ingresos."
+        // }
     ];
 
     return (
@@ -61,14 +61,17 @@ export default function FAQSection() {
                     <p className="text-gray-600 mb-6">
                         ¿Necesitas más información sobre nuestras soluciones de portal cautivo para empresas?
                     </p>
-                    {!auth.user && (
-                        <Link
-                            href={register()}
-                            className="inline-flex items-center px-6 py-3 bg-[#0090F9] text-white rounded-lg hover:bg-[#0080e6] transition-colors font-medium"
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                      
+                        <a
+                            href="https://wa.me/56948618975?text=Hola%2C%20quiero%20más%20información%20sobre%20el%20portal%20cautivo%20WiFi%20para%20mi%20empresa"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
                         >
-                            Solicitar Consulta Gratuita
-                        </Link>
-                    )}
+                            Consultar por WhatsApp
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>

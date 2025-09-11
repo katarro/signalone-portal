@@ -55,8 +55,7 @@ export default function Welcome() {
     const stats = [
         { number: "99.9%", label: "Disponibilidad Garantizada" },
         { number: "100+", label: "APs Soportados por Sistema" },
-        { number: "5k+", label: "Conexiones Simultáneas" },
-        { number: "24/7", label: "Soporte Técnico" }
+        { number: "1k+", label: "Conexiones Simultáneas" },
     ];
 
     const benefits = [
