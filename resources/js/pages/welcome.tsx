@@ -60,6 +60,25 @@ export default function Welcome() {
         { number: "24/7", label: "Monitoreo" }
     ];
 
+    const benefits = [
+        {
+            title: "Configuración Rápida",
+            description: "Implementación en minutos, no en días. Interface intuitiva para administradores."
+        },
+        {
+            title: "Escalabilidad Empresarial",
+            description: "Desde pequeñas oficinas hasta campus universitarios. Crece con tu organización."
+        },
+        {
+            title: "Soporte Técnico",
+            description: "Equipo especializado disponible para asistencia técnica y consultoría."
+        },
+        {
+            title: "Actualizaciones Automáticas",
+            description: "Mantente siempre actualizado con las últimas funcionalidades y parches de seguridad."
+        }
+    ];
+
     return (
         <>
             <Head title="SignalOne Portal - Gestión Inteligente de Redes WiFi">
@@ -98,10 +117,12 @@ export default function Welcome() {
             <header className="fixed top-0 w-full bg-white/80 backdrop-blur-sm border-b border-gray-200 z-50">
                 <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center space-x-2">
-                            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                                <Wifi className="w-5 h-5 text-white" />
-                            </div>
+                        <div className="flex items-center space-x-3">
+                            <img 
+                                src="/storage/captive-portals/logos/1757537778_Logo SignalOne.jpeg" 
+                                alt="SignalOne Logo" 
+                                className="w-10 h-10 rounded-lg object-cover"
+                            />
                             <span className="text-xl font-bold text-gray-900">SignalOne</span>
                         </div>
                         
@@ -109,7 +130,7 @@ export default function Welcome() {
                             {auth.user ? (
                                 <Link
                                     href={dashboard()}
-                                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                    className="inline-flex items-center px-4 py-2 bg-[#0090F9] text-white rounded-lg hover:bg-[#0080e6] transition-colors"
                                 >
                                     Dashboard
                                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -124,7 +145,7 @@ export default function Welcome() {
                                     </Link>
                                     <Link
                                         href={register()}
-                                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                                        className="bg-[#0090F9] text-white px-4 py-2 rounded-lg hover:bg-[#0080e6] transition-colors text-sm font-medium"
                                     >
                                         Registrarse
                                     </Link>
@@ -141,7 +162,7 @@ export default function Welcome() {
                     <div className="text-center animate-fade-in-up">
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
                             Portal Cautivo
-                            <span className="block text-blue-600">Inteligente</span>
+                            <span className="block text-[#0090F9]">Inteligente</span>
                         </h1>
                         <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
                             Gestiona, monitorea y asegura tu red WiFi con nuestra plataforma avanzada. 
@@ -153,7 +174,7 @@ export default function Welcome() {
                                 <>
                                     <Link
                                         href={register()}
-                                        className="inline-flex items-center px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 transition-all duration-200 text-lg font-medium shadow-lg hover:shadow-xl"
+                                        className="inline-flex items-center px-8 py-3 bg-[#0090F9] text-white rounded-lg hover:bg-[#0080e6] hover:scale-105 transition-all duration-200 text-lg font-medium shadow-lg hover:shadow-xl"
                                     >
                                         Comenzar Gratis
                                         <ChevronRight className="w-5 h-5 ml-2" />
@@ -172,7 +193,7 @@ export default function Welcome() {
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
                             {stats.map((stat, index) => (
                                 <div key={index} className="text-center group">
-                                    <div className="text-3xl font-bold text-blue-600 mb-2 group-hover:scale-110 transition-transform duration-200">{stat.number}</div>
+                                    <div className="text-3xl font-bold text-[#0090F9] mb-2 group-hover:scale-110 transition-transform duration-200">{stat.number}</div>
                                     <div className="text-gray-600">{stat.label}</div>
                                 </div>
                             ))}
@@ -187,25 +208,29 @@ export default function Welcome() {
             </section>
 
             {/* Features Section */}
+                        {/* Features Section */}
             <section className="py-20 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
                             Características Principales
                         </h2>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Todo lo que necesitas para gestionar tu infraestructura de red WiFi de manera profesional.
+                            Todo lo que necesitas para gestionar tu infraestructura de red de manera profesional
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {features.map((feature, index) => (
-                            <div key={index} className="p-6 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-                                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                                    <feature.icon className="w-6 h-6 text-blue-600" />
+                            <div 
+                                key={index} 
+                                className="group bg-white p-8 rounded-xl border border-gray-200 hover:border-[#0090F9] hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                            >
+                                <div className="flex items-center justify-center w-12 h-12 bg-[#ffffff] bg-opacity-10 rounded-lg mb-6 group-hover:bg-opacity-20 transition-all duration-300">
+                                    <feature.icon className="w-6 h-6 text-[#0090F9]" />
                                 </div>
                                 <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
-                                <p className="text-gray-600">{feature.description}</p>
+                                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
                             </div>
                         ))}
                     </div>
@@ -213,63 +238,64 @@ export default function Welcome() {
             </section>
 
             {/* Benefits Section */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                                ¿Por qué elegir SignalOne?
+                            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+                                ¿Por qué elegir nuestro Portal Cautivo?
                             </h2>
-                            <div className="space-y-4">
-                                {[
-                                    "Interfaz intuitiva y moderna",
-                                    "Monitoreo en tiempo real",
-                                    "Configuración rápida y sencilla",
-                                    "Soporte para múltiples protocolos",
-                                    "Escalabilidad empresarial",
-                                    "Soporte técnico 24/7"
-                                ].map((benefit, index) => (
-                                    <div key={index} className="flex items-center space-x-3">
-                                        <Check className="w-5 h-5 text-green-500" />
-                                        <span className="text-gray-700">{benefit}</span>
+                            <p className="text-xl text-gray-600 mb-8">
+                                Maximiza la seguridad y eficiencia de tu red con herramientas diseñadas para profesionales
+                            </p>
+                            
+                            <div className="space-y-6">
+                                {benefits.map((benefit, index) => (
+                                    <div key={index} className="flex items-start space-x-4">
+                                        <div className="flex-shrink-0 w-6 h-6 bg-[#0090F9] rounded-full flex items-center justify-center mt-1">
+                                            <Check className="w-4 h-4 text-white" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-1">{benefit.title}</h3>
+                                            <p className="text-gray-600">{benefit.description}</p>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
                         
                         <div className="relative">
-                            <div className="bg-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-300">
-                                <div className="flex items-center space-x-3 mb-6">
-                                    <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                                        <BarChart3 className="w-5 h-5 text-white" />
+                            <div className="bg-white rounded-2xl shadow-2xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="text-center">
+                                        <div className="text-3xl font-bold text-[#0090F9] mb-2">99.9%</div>
+                                        <div className="text-sm text-gray-600">Uptime</div>
                                     </div>
-                                    <h3 className="text-lg font-semibold">Dashboard en Vivo</h3>
-                                </div>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-600">Access Points Online</span>
-                                        <span className="font-semibold text-green-600">24/25</span>
+                                    <div className="text-center">
+                                        <div className="text-3xl font-bold text-[#0090F9] mb-2">24/7</div>
+                                        <div className="text-sm text-gray-600">Monitoreo</div>
                                     </div>
-                                    <div className="w-full bg-gray-200 rounded-full h-2">
-                                        <div className="bg-green-500 h-2 rounded-full transition-all duration-1000" style={{width: '96%'}}></div>
+                                    <div className="text-center">
+                                        <div className="text-3xl font-bold text-[#0090F9] mb-2">256-bit</div>
+                                        <div className="text-sm text-gray-600">Encriptación</div>
                                     </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-600">Usuarios Conectados</span>
-                                        <span className="font-semibold text-blue-600">847</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-600">Tráfico de Red</span>
-                                        <span className="font-semibold text-purple-600">2.4 GB/h</span>
+                                    <div className="text-center">
+                                        <div className="text-3xl font-bold text-[#0090F9] mb-2">1000+</div>
+                                        <div className="text-sm text-gray-600">Usuarios</div>
                                     </div>
                                 </div>
                             </div>
+                            
+                            {/* Decorative elements */}
+                            <div className="absolute -top-4 -right-4 w-24 h-24 bg-[#0090F9] bg-opacity-10 rounded-full"></div>
+                            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-indigo-500 bg-opacity-10 rounded-full"></div>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 bg-blue-600">
+            <section className="py-20 bg-[#0090F9]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl font-bold text-white mb-4">
                         ¿Listo para optimizar tu red WiFi?
@@ -281,7 +307,7 @@ export default function Welcome() {
                     {!auth.user && (
                         <Link
                             href={register()}
-                            className="inline-flex items-center px-8 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors text-lg font-medium"
+                            className="inline-flex items-center px-8 py-3 bg-white text-[#0090F9] rounded-lg hover:bg-gray-100 transition-colors text-lg font-medium"
                         >
                             Comenzar Ahora
                             <ArrowRight className="w-5 h-5 ml-2" />
@@ -296,7 +322,7 @@ export default function Welcome() {
                     <div className="grid md:grid-cols-4 gap-8">
                         <div className="col-span-2">
                             <div className="flex items-center space-x-2 mb-4">
-                                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                                <div className="w-8 h-8 bg-[#0090F9] rounded-lg flex items-center justify-center">
                                     <Wifi className="w-5 h-5 text-white" />
                                 </div>
                                 <span className="text-xl font-bold">SignalOne</span>
