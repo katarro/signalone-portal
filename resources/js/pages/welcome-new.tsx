@@ -66,32 +66,6 @@ export default function Welcome() {
                 <meta name="description" content="Portal cautivo profesional para gestión y monitoreo de redes WiFi con autenticación segura y análisis en tiempo real." />
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
-                <style>{`
-                    @keyframes fadeInUp {
-                        from {
-                            opacity: 0;
-                            transform: translateY(30px);
-                        }
-                        to {
-                            opacity: 1;
-                            transform: translateY(0);
-                        }
-                    }
-                    @keyframes pulse {
-                        0%, 100% {
-                            opacity: 1;
-                        }
-                        50% {
-                            opacity: 0.5;
-                        }
-                    }
-                    .animate-fade-in-up {
-                        animation: fadeInUp 0.6s ease-out;
-                    }
-                    .animate-pulse-slow {
-                        animation: pulse 2s infinite;
-                    }
-                `}</style>
             </Head>
             
             {/* Header */}
@@ -136,9 +110,9 @@ export default function Welcome() {
             </header>
 
             {/* Hero Section */}
-            <section className="pt-24 pb-12 bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
+            <section className="pt-24 pb-12 bg-gradient-to-br from-blue-50 to-indigo-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center animate-fade-in-up">
+                    <div className="text-center">
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
                             Portal Cautivo
                             <span className="block text-blue-600">Inteligente</span>
@@ -153,14 +127,14 @@ export default function Welcome() {
                                 <>
                                     <Link
                                         href={register()}
-                                        className="inline-flex items-center px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 transition-all duration-200 text-lg font-medium shadow-lg hover:shadow-xl"
+                                        className="inline-flex items-center px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-lg font-medium"
                                     >
                                         Comenzar Gratis
                                         <ChevronRight className="w-5 h-5 ml-2" />
                                     </Link>
                                     <Link
                                         href={login()}
-                                        className="inline-flex items-center px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 transition-all duration-200 text-lg font-medium"
+                                        className="inline-flex items-center px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-lg font-medium"
                                     >
                                         Iniciar Sesión
                                     </Link>
@@ -171,18 +145,13 @@ export default function Welcome() {
                         {/* Stats */}
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
                             {stats.map((stat, index) => (
-                                <div key={index} className="text-center group">
-                                    <div className="text-3xl font-bold text-blue-600 mb-2 group-hover:scale-110 transition-transform duration-200">{stat.number}</div>
+                                <div key={index} className="text-center">
+                                    <div className="text-3xl font-bold text-blue-600 mb-2">{stat.number}</div>
                                     <div className="text-gray-600">{stat.label}</div>
                                 </div>
                             ))}
                         </div>
                     </div>
-
-                    {/* Floating Elements */}
-                    <div className="absolute top-20 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-pulse-slow"></div>
-                    <div className="absolute top-40 right-10 w-16 h-16 bg-indigo-200 rounded-full opacity-20 animate-pulse-slow" style={{animationDelay: '1s'}}></div>
-                    <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-blue-300 rounded-full opacity-20 animate-pulse-slow" style={{animationDelay: '2s'}}></div>
                 </div>
             </section>
 
@@ -200,8 +169,8 @@ export default function Welcome() {
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {features.map((feature, index) => (
-                            <div key={index} className="p-6 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-                                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
+                            <div key={index} className="p-6 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all">
+                                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                                     <feature.icon className="w-6 h-6 text-blue-600" />
                                 </div>
                                 <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
@@ -238,7 +207,7 @@ export default function Welcome() {
                         </div>
                         
                         <div className="relative">
-                            <div className="bg-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-300">
+                            <div className="bg-white rounded-2xl shadow-xl p-8">
                                 <div className="flex items-center space-x-3 mb-6">
                                     <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                                         <BarChart3 className="w-5 h-5 text-white" />
@@ -251,7 +220,7 @@ export default function Welcome() {
                                         <span className="font-semibold text-green-600">24/25</span>
                                     </div>
                                     <div className="w-full bg-gray-200 rounded-full h-2">
-                                        <div className="bg-green-500 h-2 rounded-full transition-all duration-1000" style={{width: '96%'}}></div>
+                                        <div className="bg-green-500 h-2 rounded-full" style={{width: '96%'}}></div>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-gray-600">Usuarios Conectados</span>
