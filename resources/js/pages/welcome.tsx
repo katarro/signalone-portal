@@ -272,18 +272,30 @@ export default function Welcome() {
             </header>
 
             {/* Hero Section */}
-            <section className="pt-24 pb-12 bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="pt-24 pb-12 relative overflow-hidden">
+                {/* Background Image with Overlay */}
+                <div 
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                    style={{
+                        backgroundImage: "url('/storage/captive-portals/logos/wifi-publico.jpg')"
+                    }}
+                >
+                    {/* Dark overlay for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900/85 via-slate-800/75 to-gray-900/80"></div>
+                </div>
+                
+                {/* Content */}
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center animate-fade-in-up">
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
                             Portal Cautivo WiFi
                             <span className="block text-[#0090F9]">Profesional</span>
                         </h1>
-                        <p className="text-xl text-gray-600 mb-4 max-w-3xl mx-auto">
-                            El <strong>mejor software de portal cautivo</strong> para hoteles, restaurantes y empresas en Chile. 
+                        <p className="text-xl text-blue-100 mb-4 max-w-3xl mx-auto">
+                            El <strong className="text-white">mejor software de portal cautivo</strong> para hoteles, restaurantes y empresas en Chile. 
                             Autenticación WiFi segura con login personalizado y gestión completa de usuarios.
                         </p>
-                        <p className="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
+                        <p className="text-lg text-blue-200 mb-8 max-w-2xl mx-auto">
                             ¿Qué es un portal cautivo? Es la solución que permite controlar el acceso a tu WiFi público, 
                             perfecta para centros comerciales, cafés y espacios empresariales.
                         </p>
@@ -300,7 +312,7 @@ export default function Welcome() {
                                     </Link>
                                     <Link
                                         href={login()}
-                                        className="inline-flex items-center px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 transition-all duration-200 text-lg font-medium"
+                                        className="inline-flex items-center px-8 py-3 border-2 border-white text-white rounded-lg hover:bg-white hover:text-gray-900 hover:scale-105 transition-all duration-200 text-lg font-medium backdrop-blur-sm"
                                     >
                                         Ver Demo
                                     </Link>
@@ -313,16 +325,16 @@ export default function Welcome() {
                             {stats.map((stat, index) => (
                                 <div key={index} className="text-center group">
                                     <div className="text-3xl font-bold text-[#0090F9] mb-2 group-hover:scale-110 transition-transform duration-200">{stat.number}</div>
-                                    <div className="text-gray-600">{stat.label}</div>
+                                    <div className="text-blue-100">{stat.label}</div>
                                 </div>
                             ))}
                         </div>
                     </div>
 
                     {/* Floating Elements */}
-                    <div className="absolute top-20 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-pulse-slow"></div>
-                    <div className="absolute top-40 right-10 w-16 h-16 bg-indigo-200 rounded-full opacity-20 animate-pulse-slow" style={{animationDelay: '1s'}}></div>
-                    <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-blue-300 rounded-full opacity-20 animate-pulse-slow" style={{animationDelay: '2s'}}></div>
+                    <div className="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full opacity-30 animate-pulse-slow"></div>
+                    <div className="absolute top-40 right-10 w-16 h-16 bg-white/10 rounded-full opacity-30 animate-pulse-slow" style={{animationDelay: '1s'}}></div>
+                    <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-white/10 rounded-full opacity-30 animate-pulse-slow" style={{animationDelay: '2s'}}></div>
                 </div>
             </section>
 
