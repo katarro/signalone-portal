@@ -146,6 +146,25 @@ export default function SEOHead() {
                 .animate-pulse-slow {
                     animation: pulse 2s infinite;
                 }
+                
+                /* Custom mobile breakpoints */
+                @media (min-width: 360px) {
+                    .xs\\:block { display: block; }
+                    .xs\\:hidden { display: none; }
+                }
+                
+                /* Mobile-first responsive design improvements */
+                @media (max-width: 640px) {
+                    .mobile-compact {
+                        padding-top: 1rem;
+                        padding-bottom: 1rem;
+                    }
+                    
+                    .mobile-text-sm {
+                        font-size: 0.875rem;
+                        line-height: 1.25rem;
+                    }
+                }
             `}</style>
         </Head>
     );
