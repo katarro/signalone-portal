@@ -61,15 +61,35 @@ export default function EditAp({ ap, vlans, zonas }: EditApProps) {
     ip_address: ap.ip_address,
     mac_address: ap.mac_address,
     description: ap.description || "",
-    vlan_id: ap.vlan_id?.toString() || "",
-    zona_id: ap.zona_id?.toString() || "",
+    vlan_id: ap.vlan_id?.toString() || "none",
+    zona_id: ap.zona_id?.toString() || "none",
     location: ap.location || "",
     is_active: ap.is_active,
   });
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault();
-    put(`/aps/${ap.id}`);
+    
+    // Convertir "none" valores a empty string para el backend
+    const submitData = {
+      ...data,
+      vlan_id: data.vlan_id === 'none' ? '' : data.vlan_id,
+      zona_id: data.zona_id === 'none' ? '' : data.zona_id,
+    };
+    
+    // Actualizar el formulario con los datos transformados
+    Object.keys(submitData).forEach(key => {
+      setData(key as keyof EditApForm, (submitData as any)[key]);
+    });
+    
+    put(`/aps/${ap.id}`, {
+      onSuccess: () => {
+        // Opcional: redirigir o mostrar mensaje
+      },
+      onError: (errors) => {
+        console.error('Error updating AP:', errors);
+      }
+    });
   };
 
   return (
@@ -191,7 +211,7 @@ export default function EditAp({ ap, vlans, zonas }: EditApProps) {
                             <SelectValue placeholder="Selecciona una zona" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">Sin zona</SelectItem>
+                            <SelectItem value="none">Sin zona</SelectItem>
                             {zonas.map((zona) => (
                               <SelectItem key={zona.id} value={zona.id.toString()}>
                                 {zona.name}
@@ -209,7 +229,7 @@ export default function EditAp({ ap, vlans, zonas }: EditApProps) {
                             <SelectValue placeholder="Selecciona una VLAN" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">Sin VLAN</SelectItem>
+                            <SelectItem value="none">Sin VLAN</SelectItem>
                             {vlans.map((vlan) => (
                               <SelectItem key={vlan.id} value={vlan.id.toString()}>
                                 VLAN {vlan.vlan_id} - {vlan.name}
