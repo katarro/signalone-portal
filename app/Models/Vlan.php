@@ -24,6 +24,7 @@ class Vlan extends Model
         'priority',
         'mtu',
         'is_active',
+        'bandwidth_limit',
     ];
 
     protected $casts = [
@@ -55,6 +56,14 @@ class Vlan extends Model
     public function captivePortal(): BelongsTo
     {
         return $this->belongsTo(CaptivePortal::class);
+    }
+
+    /**
+     * Obtener las sesiones de clientes asociadas a esta VLAN
+     */
+    public function clientSessions(): HasMany
+    {
+        return $this->hasMany(ClientSession::class);
     }
 
     /**

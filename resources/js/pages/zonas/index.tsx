@@ -212,15 +212,7 @@ export default function ZonasIndex({ zonas }: ZonasIndexProps) {
 
                                 {/* Actions */}
                                 <div className="flex gap-2 pt-2">
-                                    <Button 
-                                        variant="outline" 
-                                        size="sm"
-                                        onClick={() => handleView(zona)}
-                                        disabled={actionInProgress === zona.id}
-                                    >
-                                        <Eye className="h-3 w-3 mr-1" />
-                                        {actionInProgress === zona.id ? 'Cargando...' : 'Ver'}
-                                    </Button>
+                                   
                                     <Button 
                                         variant="outline" 
                                         size="sm"

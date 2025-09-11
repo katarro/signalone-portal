@@ -35,6 +35,27 @@ class CaptivePortal extends Model
         'enable_logging',
         'log_failed_attempts',
         'is_active',
+        // Campos adicionales
+        'listening_port',
+        'max_clients',
+        'force_https',
+        'enable_mac_auth',
+        'block_social_media',
+        'enable_bandwidth_log',
+        'enable_device_fingerprint',
+        'log_retention_days',
+        'max_login_attempts',
+        'lockout_duration',
+        'firewall_rules',
+        'enable_dos_protection',
+        'enable_ssl_enforcement',
+        'webhook_url',
+        'radius_server',
+        'radius_secret',
+        'api_integrations',
+        'enable_analytics',
+        'enable_push_notifications',
+        'enable_api_access',
     ];
 
     protected $casts = [
@@ -49,6 +70,22 @@ class CaptivePortal extends Model
         'idle_timeout' => 'integer',
         'bandwidth_limit_down' => 'integer',
         'bandwidth_limit_up' => 'integer',
+        // Campos adicionales
+        'listening_port' => 'integer',
+        'max_clients' => 'integer',
+        'force_https' => 'boolean',
+        'enable_mac_auth' => 'boolean',
+        'block_social_media' => 'boolean',
+        'enable_bandwidth_log' => 'boolean',
+        'enable_device_fingerprint' => 'boolean',
+        'log_retention_days' => 'integer',
+        'max_login_attempts' => 'integer',
+        'lockout_duration' => 'integer',
+        'enable_dos_protection' => 'boolean',
+        'enable_ssl_enforcement' => 'boolean',
+        'enable_analytics' => 'boolean',
+        'enable_push_notifications' => 'boolean',
+        'enable_api_access' => 'boolean',
     ];
 
     /**
@@ -57,6 +94,22 @@ class CaptivePortal extends Model
     public function vlans(): HasMany
     {
         return $this->hasMany(Vlan::class);
+    }
+
+    /**
+     * Obtiene las sesiones de clientes asociadas a este portal
+     */
+    public function clientSessions(): HasMany
+    {
+        return $this->hasMany(ClientSession::class);
+    }
+
+    /**
+     * Obtiene las sesiones activas
+     */
+    public function activeSessions(): HasMany
+    {
+        return $this->clientSessions()->where('status', 'active');
     }
 
     /**

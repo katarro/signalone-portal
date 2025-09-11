@@ -211,14 +211,7 @@ export default function Index({ captivePortals }: Props) {
                                                 {authMethodLabels[portal.auth_method] || portal.auth_method}
                                             </p>
                                         </div>
-                                        <div>
-                                            <p className="text-sm font-medium text-muted-foreground">
-                                                VLANs Asociadas
-                                            </p>
-                                            <p className="text-sm">
-                                                {portal.vlans_count || 0} VLANs
-                                            </p>
-                                        </div>
+                                       
                                         <div>
                                             <p className="text-sm font-medium text-muted-foreground">
                                                 Creado

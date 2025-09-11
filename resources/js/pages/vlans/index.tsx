@@ -1,10 +1,22 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Network, Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { useState } from 'react';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -53,6 +65,36 @@ interface VlansIndexProps {
 }
 
 export default function VlansIndex({ vlans }: VlansIndexProps) {
+    const [deletingVlan, setDeletingVlan] = useState<Vlan | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [actionInProgress, setActionInProgress] = useState<number | null>(null);
+
+    const handleEdit = (vlan: Vlan) => {
+        setActionInProgress(vlan.id);
+        router.get(`/edit-vlan?id=${vlan.id}`, {}, {
+            onFinish: () => setActionInProgress(null)
+        });
+    };
+
+    const handleDelete = async (vlan: Vlan) => {
+        setIsDeleting(true);
+        try {
+            router.delete(`/vlans/${vlan.id}`, {
+                onSuccess: () => {
+                    setDeletingVlan(null);
+                },
+                onError: (errors) => {
+                    console.error('Error al eliminar VLAN:', errors);
+                },
+                onFinish: () => {
+                    setIsDeleting(false);
+                }
+            });
+        } catch (error) {
+            console.error('Error inesperado:', error);
+            setIsDeleting(false);
+        }
+    };
     const getPriorityColor = (priority: string) => {
         switch (priority) {
             case 'low':
@@ -174,22 +216,53 @@ export default function VlansIndex({ vlans }: VlansIndexProps) {
                                         </div>
 
                                         <div className="flex justify-end gap-2 pt-4 border-t">
-                                            <Link href={`/vlans/${vlan.id}`}>
-                                                <Button variant="outline" size="sm">
-                                                    <Eye className="mr-2 h-4 w-4" />
-                                                    Ver
-                                                </Button>
-                                            </Link>
-                                            <Link href={`/vlans/${vlan.id}/edit`}>
-                                                <Button variant="outline" size="sm">
-                                                    <Edit className="mr-2 h-4 w-4" />
-                                                    Editar
-                                                </Button>
-                                            </Link>
-                                            <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                                                <Trash2 className="mr-2 h-4 w-4" />
-                                                Eliminar
+                                            <Button 
+                                                variant="outline" 
+                                                size="sm"
+                                                onClick={() => handleEdit(vlan)}
+                                                disabled={actionInProgress === vlan.id}
+                                            >
+                                                <Edit className="mr-2 h-4 w-4" />
+                                                {actionInProgress === vlan.id ? 'Cargando...' : 'Editar'}
                                             </Button>
+                                            
+                                            <AlertDialog open={deletingVlan?.id === vlan.id} onOpenChange={(open) => !open && setDeletingVlan(null)}>
+                                                <AlertDialogTrigger>
+                                                    <Button 
+                                                        variant="outline" 
+                                                        size="sm" 
+                                                        className="text-red-600 hover:text-red-700"
+                                                        onClick={() => setDeletingVlan(vlan)}
+                                                        disabled={actionInProgress === vlan.id}
+                                                    >
+                                                        <Trash2 className="mr-2 h-4 w-4" />
+                                                        Eliminar
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>¿Eliminar VLAN?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            ¿Estás seguro de que quieres eliminar la VLAN <strong>"{vlan.name}" (ID: {vlan.vlan_id})</strong>? 
+                                                            Esta acción no se puede deshacer y se eliminarán todas las configuraciones asociadas.
+                                                            {vlan.zona && (
+                                                                <span className="block mt-2 text-amber-600">
+                                                                    ⚠️ Esta VLAN está asociada a la zona "{vlan.zona.name}".
+                                                                </span>
+                                                            )}
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            onClick={() => handleDelete(vlan)}
+                                                            className={`bg-red-600 hover:bg-red-700 ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                        >
+                                                            {isDeleting ? 'Eliminando...' : 'Eliminar'}
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
                                         </div>
                                     </CardContent>
                                 </Card>

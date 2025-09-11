@@ -138,13 +138,23 @@ class VlanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Vlan $vlan)
+    public function edit(Request $request, Vlan $vlan = null)
     {
+        // Si se llama desde la ruta edit-vlan con query parameter
+        if ($request->has('id') && !$vlan) {
+            $vlan = Vlan::findOrFail($request->get('id'));
+        }
+        
+        // Si se llama desde resource route
+        if (!$vlan) {
+            abort(404);
+        }
+
         $zonas = Zona::active()->orderBy('name')->get();
         $captivePortals = CaptivePortal::active()->orderBy('name')->get();
 
-        return Inertia::render('vlans/edit', [
-            'vlan' => $vlan->load('captivePortal'),
+        return Inertia::render('edit-vlan', [
+            'vlan' => $vlan->load('zona', 'captivePortal'),
             'zonas' => $zonas,
             'captivePortals' => $captivePortals,
         ]);
@@ -163,12 +173,34 @@ class VlanController extends Controller
             'gateway' => ['required', 'ip'],
             'dns_primary' => ['required', 'ip'],
             'dns_secondary' => ['nullable', 'ip'],
-            'dhcp_enabled' => ['required', 'boolean'],
+            'dhcp_enabled' => ['boolean'],
             'dhcp_start' => ['nullable', 'ip', 'required_if:dhcp_enabled,true'],
             'dhcp_end' => ['nullable', 'ip', 'required_if:dhcp_enabled,true'],
-            'zona_id' => ['required', 'exists:zonas,id'],
+            'zona_id' => ['nullable', 'exists:zonas,id'],
+            'captive_portal_id' => ['nullable', 'exists:captive_portals,id'],
             'priority' => ['required', Rule::in(['low', 'normal', 'high', 'critical'])],
             'mtu' => ['required', 'integer', 'min:68', 'max:9000'],
+            'is_active' => ['boolean'],
+            'bandwidth_limit' => ['nullable', 'integer', 'min:1'],
+        ], [
+            'vlan_id.required' => 'El ID de VLAN es obligatorio.',
+            'vlan_id.unique' => 'Este ID de VLAN ya está en uso.',
+            'vlan_id.min' => 'El ID de VLAN debe ser mayor a 0.',
+            'vlan_id.max' => 'El ID de VLAN debe ser menor a 4095.',
+            'name.required' => 'El nombre de la VLAN es obligatorio.',
+            'subnet.required' => 'La subred es obligatoria.',
+            'subnet.regex' => 'El formato de la subred no es válido (ej: 192.168.1.0/24).',
+            'gateway.required' => 'El gateway es obligatorio.',
+            'gateway.ip' => 'El gateway debe ser una IP válida.',
+            'dns_primary.required' => 'El DNS primario es obligatorio.',
+            'dns_primary.ip' => 'El DNS primario debe ser una IP válida.',
+            'dns_secondary.ip' => 'El DNS secundario debe ser una IP válida.',
+            'dhcp_start.required_if' => 'La IP inicial es obligatoria cuando DHCP está habilitado.',
+            'dhcp_end.required_if' => 'La IP final es obligatoria cuando DHCP está habilitado.',
+            'zona_id.exists' => 'La zona seleccionada no existe.',
+            'captive_portal_id.exists' => 'El portal cautivo seleccionado no existe.',
+            'mtu.min' => 'El MTU debe ser mayor a 67.',
+            'mtu.max' => 'El MTU debe ser menor a 9001.',
         ]);
 
         $vlan->update($validated);
@@ -181,8 +213,19 @@ class VlanController extends Controller
      */
     public function destroy(Vlan $vlan)
     {
+        // Verificar si la VLAN tiene APs asociados
+        if ($vlan->aps()->count() > 0) {
+            return back()->with('error', 'No se puede eliminar la VLAN porque tiene Access Points asociados.');
+        }
+
+        // Verificar si la VLAN tiene sesiones de clientes activas
+        if ($vlan->clientSessions()->where('status', 'active')->count() > 0) {
+            return back()->with('error', 'No se puede eliminar la VLAN porque tiene sesiones de clientes activas.');
+        }
+
+        $vlanName = $vlan->name;
         $vlan->delete();
 
-        return redirect()->route('vlans.index')->with('success', 'VLAN eliminada exitosamente.');
+        return redirect()->route('vlans.index')->with('success', "VLAN '{$vlanName}' eliminada exitosamente.");
     }
 }

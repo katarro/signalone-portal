@@ -14,8 +14,55 @@ interface Props {
     captivePortal: Record<string, any>;
 }
 
+interface FormData {
+    name: string;
+    description: string;
+    auth_method: string;
+    login_page_title: string;
+    welcome_message: string;
+    redirect_url: string;
+    auto_redirect: boolean;
+    require_terms: boolean;
+    terms_content: string;
+    terms_url: string;
+    session_timeout: number;
+    idle_timeout: number;
+    bandwidth_limit_down: number;
+    bandwidth_limit_up: number;
+    social_auth_config: Record<string, any>;
+    sms_provider: string;
+    sms_config: Record<string, any>;
+    logo_url: string;
+    background_color: string;
+    primary_color: string;
+    custom_css: string;
+    enable_logging: boolean;
+    log_failed_attempts: boolean;
+    is_active: boolean;
+    listening_port: number;
+    max_clients: number;
+    force_https: boolean;
+    enable_mac_auth: boolean;
+    block_social_media: boolean;
+    enable_bandwidth_log: boolean;
+    enable_device_fingerprint: boolean;
+    log_retention_days: number;
+    max_login_attempts: number;
+    lockout_duration: number;
+    firewall_rules: string;
+    enable_dos_protection: boolean;
+    enable_ssl_enforcement: boolean;
+    webhook_url: string;
+    radius_server: string;
+    radius_secret: string;
+    api_integrations: string;
+    enable_analytics: boolean;
+    enable_push_notifications: boolean;
+    enable_api_access: boolean;
+}
+
 export default function Edit({ captivePortal }: Props) {
-    const { data, setData, put, processing, errors } = useForm<Record<string, any>>({
+    const { data, setData, put, processing, errors } = useForm<FormData>({
         name: captivePortal.name || '',
         description: captivePortal.description || '',
         auth_method: captivePortal.auth_method || 'terms_only',
@@ -71,7 +118,58 @@ export default function Edit({ captivePortal }: Props) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(`/captive-portals/${captivePortal.id}`);
+        
+        console.log('=== CAPTIVE PORTAL FORM SUBMISSION ===');
+        console.log('Portal ID:', captivePortal.id);
+        console.log('Form data being submitted:', data);
+        console.log('Processing state:', processing);
+        console.log('Current errors:', errors);
+        
+        // Verificar que todos los campos requeridos estén presentes
+        const requiredFields = ['name', 'auth_method', 'login_page_title', 'session_timeout', 'idle_timeout', 'background_color', 'primary_color'];
+        const missingFields = requiredFields.filter(field => !(data as any)[field]);
+        
+        if (missingFields.length > 0) {
+            console.error('Missing required fields:', missingFields);
+            alert(`Faltan campos requeridos: ${missingFields.join(', ')}`);
+            return;
+        }
+
+        // Preparar los datos para envío, convirtiendo 0 a null para campos opcionales de límites
+        const submitData = {
+            ...data,
+            bandwidth_limit_down: data.bandwidth_limit_down === 0 ? null : data.bandwidth_limit_down,
+            bandwidth_limit_up: data.bandwidth_limit_up === 0 ? null : data.bandwidth_limit_up,
+            max_clients: data.max_clients === 0 ? null : data.max_clients,
+        };
+        
+        console.log('Processed data for submission:', submitData);
+        
+        router.put(`/captive-portals/${captivePortal.id}`, submitData, {
+            onBefore: () => {
+                console.log('Request starting...');
+                return true;
+            },
+            onStart: () => {
+                console.log('Request started');
+            },
+            onProgress: (progress) => {
+                console.log('Request progress:', progress);
+            },
+            onSuccess: (page) => {
+                console.log('Update successful!');
+                console.log('Response page:', page);
+                router.visit('/captive-portals');
+            },
+            onError: (errors) => {
+                console.error('Update failed with validation errors:', errors);
+                alert('Error de validación. Revisa la consola para más detalles.');
+            },
+            onFinish: () => {
+                console.log('Request finished');
+                console.log('=== END SUBMISSION ===');
+            }
+        });
     };
 
     return (
