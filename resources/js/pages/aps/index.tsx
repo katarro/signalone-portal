@@ -4,6 +4,17 @@ import { Badge } from "@/components/ui/badge";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Link, useForm, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { 
@@ -19,7 +30,8 @@ import {
   Power,
   PowerOff,
   Edit,
-  RefreshCw
+  RefreshCw,
+  AlertTriangle
 } from "lucide-react";
 
 interface Ap {
@@ -60,10 +72,14 @@ interface ApIndexProps {
   };
 }
 
-export default function ApIndex({ aps }: ApIndexProps) {
-  const { post, delete: destroy } = useForm();
+export default function ApsIndex({ aps: initialAps }: ApIndexProps) {
+  const [aps, setAps] = useState(initialAps);
+  const [loading, setLoading] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [apToDelete, setApToDelete] = useState<Ap | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
+  const { post } = useForm();
 
   // Auto-refresh cada 30 segundos para ver actualizaciones del ping automático
   useEffect(() => {
@@ -92,9 +108,16 @@ export default function ApIndex({ aps }: ApIndexProps) {
     });
   };
 
-  const handleDelete = (apId: number) => {
-    if (confirm('¿Estás seguro de que deseas eliminar este Access Point?')) {
-      destroy(`/aps/${apId}`);
+  const handleDelete = (ap: Ap) => {
+    setApToDelete(ap);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (apToDelete) {
+      router.delete(`/aps/${apToDelete.id}`);
+      setDeleteDialogOpen(false);
+      setApToDelete(null);
     }
   };
 
@@ -309,7 +332,7 @@ export default function ApIndex({ aps }: ApIndexProps) {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleDelete(ap.id)}
+                      onClick={() => handleDelete(ap)}
                       className="text-red-600 hover:text-red-700"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -357,6 +380,39 @@ export default function ApIndex({ aps }: ApIndexProps) {
             </div>
           )}
         </div>
+
+        {/* AlertDialog para confirmación de eliminación */}
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-red-600" />
+                Confirmar eliminación
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                ¿Estás seguro de que deseas eliminar el Access Point <strong>"{apToDelete?.name}"</strong>?
+                <br />
+                <span className="text-sm text-muted-foreground mt-2 block">
+                  MAC: {apToDelete?.mac_address} | IP: {apToDelete?.ip_address}
+                </span>
+                <br />
+                Esta acción no se puede deshacer y eliminará permanentemente todos los datos asociados.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={confirmDelete}
+                className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Eliminar Access Point
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </SidebarInset>
     </SidebarProvider>
   );
